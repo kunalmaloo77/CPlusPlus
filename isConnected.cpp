@@ -1,17 +1,22 @@
 #include <iostream>
 using namespace std;
 
-bool hasPath(int **edges, int n, int sv, int ev, bool *visited) {
-  if (sv == ev) {
-    return true;
-  }
+void helper(int **edges, int n, int sv, bool *visited) {
   visited[sv] = true;
   for (int i = 0; i < n; ++i) {
-    if (!visited[i] && edges[sv][i]) {
-      return hasPath(edges, n, i, ev, visited);
+    if (!visited[i] && edges[sv][i] == 1) {
+      helper(edges, n, i, visited);
     }
   }
-  return false;
+}
+
+bool isConnected(int **edges, int n, int sv, bool *visited) {
+  helper(edges, n, sv, visited);
+  for (int i = 0; i < n; ++i) {
+    if (!visited[i])
+      return false;
+  }
+  return true;
 }
 
 int main() {
@@ -41,14 +46,13 @@ int main() {
   for (int i = 0; i < n; ++i) {
     visited[i] = false;
   }
-  int sv;
-  int ev;
-  cin >> sv >> ev;
-  if (hasPath(edges, n, sv, ev, visited)) {
-    cout << "Has Path" << endl;
+
+  if (isConnected(edges, n, 0, visited)) {
+    cout << "Connected";
   } else {
-    cout << "Does not have path." << endl;
+    cout << "Disconnected";
   }
+
   for (int i = 0; i < n; ++i)
     delete[] edges[i];
   delete[] edges;
